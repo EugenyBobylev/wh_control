@@ -23,4 +23,4 @@ class Config(metaclass=SingletonMeta):
         self.logs_dir = f"{self.app_dir}/logs"
 
         # Fast API
-        self.base_url: str = os.getenv('BASE_URL', 'http://srv-dev.bant.pro:8080/wc/')
+        self.base_url: str = os.getenv('BASE_URL', 'http://srv-dev.bant.pro:8080')
