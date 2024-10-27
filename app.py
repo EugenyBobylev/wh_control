@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, time
 
+import pandas as pd
 import requests
 import streamlit as st
 from urllib3 import request
@@ -48,7 +49,7 @@ def get_request_url() -> str:
 
 
 st.set_page_config(
-    page_title="Ex-stream-ly Cool App",
+    page_title="Whale-cohort-2.0",
     page_icon="🧊",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -127,8 +128,15 @@ with container_3.expander('Задайте окончание периода'):
 if st.sidebar.button("Выполнить запрос", disabled= not st.session_state.get('is_valid',False), key='do_btn'):
     url = get_request_url()
     st.write(url)
-    data = requests.get(url)
-    st.write(data.json())
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        t = data['t']
+        c = data['c']
+        df = pd.DataFrame({'ts': t, 'value': c})
+        df_styled = df.style.format({'value': '{:,.3f}'})
+        st.dataframe(df_styled, width=400)
+        # st.table(df)
 
 
 # start_date = st.date_input('Enter start date', value=datetime(2019,7,6))
