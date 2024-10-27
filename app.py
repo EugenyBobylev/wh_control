@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, time
 import pandas as pd
 import requests
 import streamlit as st
+import altair as alt
+from streamlit import altair_chart
 from urllib3 import request
 
 from bl import endpoint_dct, resolution_dct, cohort_dct, success_lst
@@ -136,15 +138,17 @@ if st.sidebar.button("Выполнить запрос", disabled= not st.session
         df = pd.DataFrame({'ts': t, 'value': c})
         df_styled = df.style.format({'value': '{:,.3f}'})
         st.dataframe(df_styled, width=400)
-        # st.table(df)
 
+        # st.line_chart(df, x="ts", y="value")
+        min_val = df['value'].min()
+        max_val = df['value'].max()
+        height = (max_val - min_val) * 0.005
+        min_val -= height
+        max_val += height
 
-# start_date = st.date_input('Enter start date', value=datetime(2019,7,6))
-# start_time = st.time_input('Enter start time')
-# start_datetime = datetime.combine(start_date, start_time)
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
+        c = (
+            alt.Chart(df).mark_line().encode(
+                x=alt.X('ts'),
+                y=alt.Y('value', scale=alt.Scale(domain=[min_val, max_val])))
+        )
+        st.altair_chart(c, use_container_width=True)
