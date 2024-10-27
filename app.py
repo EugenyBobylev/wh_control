@@ -4,8 +4,7 @@ import pandas as pd
 import requests
 import streamlit as st
 import altair as alt
-from streamlit import altair_chart
-from urllib3 import request
+
 
 from bl import endpoint_dct, resolution_dct, cohort_dct, success_lst
 from config import Config
@@ -136,8 +135,10 @@ if st.sidebar.button("Выполнить запрос", disabled= not st.session
         t = data['t']
         c = data['c']
         df = pd.DataFrame({'ts': t, 'value': c})
+        df['time'] = df['ts'].apply(UtcDate.ts2dt)
+        df = df[['ts','time','value']]
         df_styled = df.style.format({'value': '{:,.3f}'})
-        st.dataframe(df_styled, width=400)
+        st.dataframe(df_styled, width=700)
 
         # st.line_chart(df, x="ts", y="value")
         min_val = df['value'].min()
@@ -149,6 +150,9 @@ if st.sidebar.button("Выполнить запрос", disabled= not st.session
         c = (
             alt.Chart(df).mark_line().encode(
                 x=alt.X('ts'),
-                y=alt.Y('value', scale=alt.Scale(domain=[min_val, max_val])))
+                y=alt.Y('value', scale=alt.Scale(domain=[min_val, max_val]))
+            ).properties(
+                width=1500
+            ).interactive()
         )
-        st.altair_chart(c, use_container_width=True)
+        st.altair_chart(c, use_container_width=False)
