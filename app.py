@@ -40,7 +40,7 @@ def get_request_url() -> str:
     idx = list(cohort_dct.values()).index(cohort)
     cogort = list(cohort_dct.keys())[idx]
 
-    resolution = resolution_dct[timeframe] // 60
+    resolution = resolution_dct[timeframe]
 
     key = st.session_state.selected_endpoint
     endpoint = endpoint_dct[key]
