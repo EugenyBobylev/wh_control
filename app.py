@@ -17,10 +17,12 @@ cohorts = cohort_dct.values()
 if 'is_valid' not in st.session_state:
     st.session_state.disabled = True
 
+
 def select_endpoint():
     key = st.session_state.selected_endpoint
     val = f'Ваш выбор: {endpoint_dct[key]}'
     container_2.write(val)
+
 
 def validate_request():
     key = st.session_state.selected_endpoint
